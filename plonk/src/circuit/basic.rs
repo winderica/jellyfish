@@ -173,6 +173,27 @@ impl<F: FftField> Circuit<F> for PlonkCircuit<F> {
             .collect::<Result<Vec<F>, PlonkError>>()
     }
 
+    fn wire_values(&self) -> Vec<Vec<F>> {
+        self.wire_variables
+            .iter()
+            .take(self.num_wire_types)
+            .map(|wire_vars| {
+                wire_vars
+                    .iter()
+                    .map(|&var| self.witness[var])
+                    .collect::<Vec<_>>()
+            })
+            .collect::<Vec<Vec<F>>>()
+    }
+
+    fn extended_id_permutation_ref(&self) -> &Vec<F> {
+        &self.extended_id_permutation
+    }
+
+    fn wire_permutation_ref(&self) -> &Vec<(WireId, GateId)> {
+        &self.wire_permutation
+    }
+
     fn check_circuit_satisfiability(&self, pub_input: &[F]) -> Result<(), PlonkError> {
         if pub_input.len() != self.num_inputs() {
             return Err(PubInputLenMismatch(pub_input.len(), self.pub_input_gate_ids.len()).into());

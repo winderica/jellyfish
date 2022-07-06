@@ -45,6 +45,15 @@ pub trait Circuit<F: Field> {
     /// The list of public input values.
     fn public_input(&self) -> Result<Vec<F>, PlonkError>;
 
+    /// The list of witness values over wires.
+    fn wire_values(&self) -> Vec<Vec<F>>;
+
+    /// The reference to the extended identity permutation.
+    fn extended_id_permutation_ref(&self) -> &Vec<F>;
+
+    /// The reference to the permutation over wires.
+    fn wire_permutation_ref(&self) -> &Vec<(WireId, GateId)>;
+
     /// Check circuit satisfiability against a public input.
     fn check_circuit_satisfiability(&self, pub_input: &[F]) -> Result<(), PlonkError>;
 
